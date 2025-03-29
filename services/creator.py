@@ -2,7 +2,8 @@ from google import genai
 from job_parser import parsed_data
 from pypdf import PdfReader
 from reportlab.pdfgen import canvas
-
+import os
+from dotenv import load_dotenv
 class ResumeGenerator:
     def __init__(self, api_key, job_url, resume_path, output_path="output.pdf"):
         self.client = genai.Client(api_key=api_key)
@@ -112,10 +113,12 @@ Original Resume Content:
 
 # Usage
 if __name__ == "__main__":
+    load_dotenv()
     generator = ResumeGenerator(
-        api_key="AIzaSyDSjEEqEEsKFk3art9zV3p3DqO7a4CETdo",
+        api_key=os.getenv("GEMINI_API", "doesnt have any"),
         job_url="https://www.python.org/jobs/7834/",
         resume_path="C:/Users/anujs/Downloads/Blue Light Blue Color Blocks Flight Attendant CV (6).pdf"
     )
+
     # generator.run()
     generator.RUN()
