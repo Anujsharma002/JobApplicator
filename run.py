@@ -15,4 +15,4 @@ if __name__ == "__main__":
     # # generator.run()
     # generator.RUN()
 
-    demo.launch()
+    demo.launch(pwa=True)
