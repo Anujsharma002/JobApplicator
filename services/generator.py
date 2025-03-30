@@ -1,9 +1,10 @@
 from google import genai
-from job_parser import parsed_data
+from services.job_parser import parsed_data
 from pypdf import PdfReader
 from reportlab.pdfgen import canvas
+from services.resume_parser import extract_resume_content
 import os
-from dotenv import load_dotenv
+
 class ResumeGenerator:
     def __init__(self, api_key, job_url, resume_path, output_path="output.pdf"):
         self.client = genai.Client(api_key=api_key)
@@ -11,14 +12,9 @@ class ResumeGenerator:
         self.resume_path = resume_path
         self.output_path = output_path
     
-    def extract_resume_content(self):
-        """Extracts text content from the first page of the resume PDF."""
-        return PdfReader(self.resume_path).pages[0].extract_text()
-    
     def generate_resume(self):
         job_content = parsed_data(self.job_url)
-        resume_content = self.extract_resume_content()
-        
+        resume_content = extract_resume_content(self.resume_path)
         prompt = f'''
         {job_content}
         Resume content is below:
@@ -72,12 +68,14 @@ class ResumeGenerator:
         response_text = self.generate_resume()
         self.create_pdf(response_text)
         print("Resume PDF generated successfully.")
+
     def RUN(self):
         response_text = self.cover_letter()
-        print(response_text)        
+        print(response_text)       
+
     def cover_letter(self):
         job_content = parsed_data(self.job_url)
-        resume_content = self.extract_resume_content()
+        resume_content = extract_resume_content(self, resume_path=self.resume_path)
         
         prompt = f'''
         Using the provided job description and resume content, generate a professional and concise cover letter tailored to the job role.
@@ -109,16 +107,4 @@ Original Resume Content:
         )
         
         return response.candidates[0].content.parts[0].text
-        
-
-# Usage
-if __name__ == "__main__":
-    load_dotenv()
-    generator = ResumeGenerator(
-        api_key=os.getenv("GEMINI_API", "doesnt have any"),
-        job_url="https://www.python.org/jobs/7834/",
-        resume_path="C:/Users/anujs/Downloads/Blue Light Blue Color Blocks Flight Attendant CV (6).pdf"
-    )
-
-    # generator.run()
-    generator.RUN()
+    
