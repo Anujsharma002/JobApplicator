@@ -14,7 +14,7 @@ class ResumeGenerator:
     
     def generate_resume(self):
         job_content = parsed_data(self.job_url)
-        resume_content = extract_resume_content(self.resume_path)
+        resume_content = extract_resume_content(self, self.resume_path)
         prompt = f'''
         {job_content}
         Resume content is below:
