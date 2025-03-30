@@ -3,6 +3,7 @@ from services.job_parser import parsed_data
 from pypdf import PdfReader
 from reportlab.pdfgen import canvas
 from services.resume_parser import extract_resume_content
+from services.file_handler import output_file
 import os
 
 class ResumeGenerator:
@@ -10,7 +11,7 @@ class ResumeGenerator:
         self.client = genai.Client(api_key=api_key)
         self.job_url = job_url
         self.resume_path = resume_path
-        self.output_path = output_path
+        self.output_path = output_file(resume_path)
     
     def generate_resume(self):
         job_content = parsed_data(self.job_url)
